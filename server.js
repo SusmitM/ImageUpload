@@ -1,35 +1,35 @@
 const express = require('express');
 const http =require('http');
 const cors = require('cors');
-
+const app = express();
 const server= http.createServer(app);
 
-const multer = require('multer');
+// const multer = require('multer');
 
 
 const port = process.env.PORT || 4200
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename: function(req, file, cb) {
-        cb(null, file.originalname);
-    },
-});
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, 'uploads/');
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, file.originalname);
+//     },
+// });
 
-const upload = multer({ storage: storage });
-
-const app = express();
-app.use('/uploads', express.static('./uploads'));
+// const upload = multer({ storage: storage });
 
 
-app.use(cors());
+// app.use('/uploads', express.static('./uploads'));
 
-app.post('/image', upload.single('image'), function(req, res, next) {
-    res.send('Image received');
-    console.log(req.file.originalname)
-});
+
+// app.use(cors());
+
+// app.post('/image', upload.single('image'), function(req, res, next) {
+//     res.send('Image received');
+//     console.log(req.file.originalname)
+// });
 
 
 app.get('/',(req,res)=>{
