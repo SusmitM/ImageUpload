@@ -1,6 +1,13 @@
 const express = require('express');
+const http =require('http');
 const cors = require('cors');
+
+const server= http.createServer(app);
+
 const multer = require('multer');
+
+
+const port = process.env.PORT || 4200
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -29,6 +36,7 @@ app.get('/',(req,res)=>{
     res.sendFile(__dirname + '/index.html');
 })
 
-app.listen(4200, () => {
-    console.log(`Example app listening on http://localhost:4200`)
-  })
+
+server.listen(port,()=>{
+    console.log(`running on port ${port}`);
+}) 
