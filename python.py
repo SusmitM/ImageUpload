@@ -1,40 +1,48 @@
-from flask import *
-import json,time
+#flask is used to make API route
+from flask import Flask, request
+
+#CORS is used so that we can send images through browers
+from flask_cors import CORS, cross_origin
+
+#tesseract our ML model
 import pytesseract as tess
 tess.pytesseract.tesseract_cmd= r'C:\Users\ADMIN\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+
+#to handel Image operations
 from PIL import Image
 
+#stores our image in local memory
+import io
 
-
+#app will be used to make our POST and GET request routes
 app = Flask(__name__)
 
+#CORS for image transfer
+CORS(app)
 
-@app.route('/', methods=['GET'])
-def home_page():
-    data_set={'Page': 'Home', 'Message': 'Successfully loaded the home page', 'Time': time.time()}
-    json_dump= json.dumps(data_set)
+#Creating an route that handels our POST request from the frontend i.e image is received here {http://127.0.0.1:7777/upload-image} is our POST request path
+@app.route('/upload-image', methods=['POST'])
+#calling CORS
+@cross_origin()
 
-    return json_dump
-
-
-@app.route('/user/', methods=['GET'])
-def user_page():
-    user_query=str(request.args.get('user')) #/user/?user=''
+#function that handles our image operations
+def upload_image():
     
-    #acesssing the image
-    img=Image.open(f'uploads/{user_query}')
-    text=tess.image_to_string(img)
-    print(text)
+    # Get the image data from the POST request
+    image_data = request.files.get('image').read()
 
-    data_set={'Text': f'{text}'}
-    # 'Message': f'uploads/{user_query}', 'Time': time.time()
-    json_dump= json.dumps(data_set)
+    
+   # Use PIL to load the image from memory
+    image = Image.open(io.BytesIO(image_data))
 
-    return json_dump
+    # Use Tesseract to extract text from the image
+    text=tess.image_to_string(image)
 
+    # Send a response back to the client
+    return text
 
-
+#Assigning the port 7777 to the python api
 if __name__ == '__main__':
     app.run(port=7777)
 
-## function('C:\Users\ADMIN\Desktop\Images\tt.png')
+
